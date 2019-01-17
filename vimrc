@@ -82,6 +82,7 @@ inoremap #in #include
 nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
 vnoremap // y/<C-R>"<CR>
 
+nnoremap <leader>0 :setl noai nocin nosi inde=<CR>
 "=========================================================================
 " highlight Functions
 syn match cFunctions "\<[a-zA-Z_][a-zA-Z_0-9]*\>[^()]*)("me=e-2
