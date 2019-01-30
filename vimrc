@@ -48,6 +48,8 @@ set fdm=syntax
 set fdls=99
 set bs=2
 set colorcolumn=81
+set splitbelow
+set splitright
 
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
 
