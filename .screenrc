@@ -1,5 +1,10 @@
+startup_message off
+vbell off
 altscreen on
+autodetach on
 defscrollback 100000
+scrollback 100000
+termcapinfo xterm* 'ti@:te@:hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
 
 # use mouse to select regions
 defmousetrack on
@@ -15,6 +20,8 @@ layout new one
 # ** Key Binding **
 # disable xoff
 bind s split
+
+bind t title
 
 # navigating regions with Ctrl-arrows
 bindkey "^[[1;5D" focus left
