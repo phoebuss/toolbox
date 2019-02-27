@@ -36,3 +36,6 @@ bind -c rsz h eval "resize -h -5" "command -c rsz"
 bind -c rsz j eval "resize -v -5" "command -c rsz"
 bind -c rsz k eval "resize -v +5" "command -c rsz"
 bind -c rsz l eval "resize -h +5" "command -c rsz"
+
+bindkey "^[[5;5~" prev                  # ctrl + PgUp : previous window
+bindkey "^[[6;5~" next                  # ctrl + PgDn : next window
