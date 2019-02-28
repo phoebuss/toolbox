@@ -12,7 +12,7 @@ mousetrack on
 
 # caption customization
 hardstatus alwayslastline
-hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]'
+hardstatus string "%{= kG}%{g}[%{G}$USER@%H%{g}][%{Y}%S%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]"
 
 layout autosave on
 layout new one
