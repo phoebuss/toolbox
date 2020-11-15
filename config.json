@@ -41,7 +41,7 @@
         "settings": {
             "vnext": [
             {
-                "address": "",
+                "address": "<SERVER>",
                 "port": 443,
                 "users": [
                 {
@@ -55,35 +55,17 @@
         "streamSettings": {
             "network": "ws",
             "security": "tls",
+            "tlsSettings": {
+                "allowInsecure": true,
+                "serverName": "<SERVER>"
+            },
             "wsSettings": {
+                "connectionReuse": true,
+                "headers": {
+                    "Host": "<SERVER>"
+                },
                 "path": "/php"
             },
-            "sockopt": {
-                "mark": 255
-            }
-        },
-        "mux": {
-            "enabled": true
-        }
-    },
-    {
-        "tag": "proxy2",
-        "protocol": "vmess",
-        "settings": {
-            "vnext": [
-            {
-                "address": "",
-                "port": 18443,
-                "users": [
-                {
-                    "id": "5b3bd018-daaa-4a99-a334-6df167df3dd7",
-                    "alterId": 64
-                }
-                ]
-            }
-            ]
-        },
-        "streamSettings": {
             "sockopt": {
                 "mark": 255
             }
@@ -126,45 +108,45 @@
 
     "dns": {
         "servers": [
-            "8.8.8.8", 
-            "1.1.1.1", 
-            "114.114.114.114", 
+            "8.8.8.8",
+            "1.1.1.1",
+            "114.114.114.114",
             {
-                "address": "223.5.5.5", 
+                "address": "223.5.5.5",
                 "port": 53,
                 "domains": [
                     "geosite:cn",
-                    "ntp.org",   
-                    "v.okeyb.com" 
+                    "ntp.org",
+                    "<SERVER>"
                 ]
             }
         ]
     },
 
     "routing": {
-        "domainStrategy": "IPOnDemand",
+        "domainStrategy": "IPIfNonMatch",
         "rules": [
-        { 
+        {
             "type": "field",
             "inboundTag": [
                 "transparent"
             ],
             "port": 53,
             "network": "udp",
-            "outboundTag": "dns-out" 
-        },    
-        { 
+            "outboundTag": "dns-out"
+        },
+        {
             "type": "field",
             "inboundTag": [
                 "transparent"
             ],
             "port": 123,
             "network": "udp",
-            "outboundTag": "direct" 
-        },    
+            "outboundTag": "direct"
+        },
         {
-            "type": "field", 
-            "ip": [ 
+            "type": "field",
+            "ip": [
 
                 "223.5.5.5",
                 "114.114.114.114"
@@ -173,35 +155,35 @@
         },
         {
             "type": "field",
-            "ip": [ 
+            "ip": [
 
                 "8.8.8.8",
                 "1.1.1.1"
             ],
-            "outboundTag": "proxy" 
+            "outboundTag": "proxy"
         },
-        { 
-            "type": "field", 
+        {
+            "type": "field",
             "domain": [
                 "geosite:category-ads-all"
             ],
             "outboundTag": "block"
         },
-        { 
+        {
             "type": "field",
-            "protocol":["bittorrent"], 
+            "protocol":["bittorrent"],
             "outboundTag": "direct"
         },
-        { 
-            "type": "field", 
+        {
+            "type": "field",
             "ip": [
                 "geoip:private",
                 "geoip:cn"
             ],
             "outboundTag": "direct"
         },
-        { 
-            "type": "field", 
+        {
+            "type": "field",
             "domain": [
                 "geosite:cn"
             ],
