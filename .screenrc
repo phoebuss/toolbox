@@ -5,10 +5,11 @@ autodetach on
 defscrollback 100000
 scrollback 100000
 termcapinfo xterm* 'ti@:te@:hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
+term xterm
 
 # use mouse to select regions
-defmousetrack on
-mousetrack on
+#defmousetrack on
+#mousetrack on
 
 # caption customization
 hardstatus alwayslastline
@@ -39,3 +40,5 @@ bind -c rsz l eval "resize -h +5" "command -c rsz"
 
 bindkey "^[[5;5~" prev                  # ctrl + PgUp : previous window
 bindkey "^[[6;5~" next                  # ctrl + PgDn : next window
+
+bind ^c stuff "screen -X chdir \$PWD; screen ^M"

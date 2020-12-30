@@ -1,4 +1,16 @@
 "=========================================================================
+" Windows OS Setting
+if has('win32')
+    syntax on
+    autocmd GUIEnter * simalt ~x
+    set guifont=Consolas:h11
+    set noeb vb t_vb=
+    set linespace=-1
+    set nobackup
+    autocmd filetype text set tw=160
+endif
+
+"=========================================================================
 " Vundle
 if !empty(glob("~/.vim/bundle/Vundle.vim"))
     set nocompatible              " be iMproved, required
@@ -38,7 +50,7 @@ set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set expandtab
-set fileencodings=ucs-bom,utf-8,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+set fileencodings=utf-8,ucs-bom,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set number
 set autoindent
 set autochdir
@@ -50,8 +62,10 @@ set bs=2
 set colorcolumn=81
 set splitbelow
 set splitright
+set encoding=utf-8
 
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
+autocmd filetype python set fdm=indent
 
 "=========================================================================
 " Hotkey mapping
@@ -84,7 +98,12 @@ inoremap #in #include
 nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
 vnoremap // y/<C-R>"<CR>
 
+"Disable autoindent for paste
 nnoremap <leader>0 :setl noai nocin nosi noet inde=<CR>:imapc<CR>
+
+"Disable record
+nnoremap q <Nop>
+
 "=========================================================================
 " highlight Functions
 syn match cFunctions "\<[a-zA-Z_][a-zA-Z_0-9]*\>[^()]*)("me=e-2
