@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 HISTSIZE=200000
 HISTFILESIZE=200000
 HISTTIMEFORMAT="%m/%d/%y %T"
@@ -29,3 +31,38 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 
 export LANG=zh_CN.utf8
 export PYTHONSTARTUP="$HOME/.pythonrc"
+
+# start ssh-agent and register all unprotected private key in $HOME/.ssh
+[ x$SSH_AUTH_SOCK == x ] && {
+    runtime="/var/run/user/${UID}"
+    socket="${runtime}/ssh_agent.socket"
+    cache="${runtime}/ssh_agent.cache"
+    [ -S $socket ] || {
+        s=`ssh-agent -a $socket | xargs | cut -d ';' -f '1-4'`
+        echo $s > ${cache}; sync
+    }
+    [ -f $cache ] && source ${cache}
+
+    tmpfile=`mktemp`
+    cat > $tmpfile << EOF
+#!/usr/bin/env bash
+read s
+echo \$s
+EOF
+    chmod a+x $tmpfile
+
+    [ x$DISPLAY == x ] || DISPLAY_O=$DISPLAY
+    [ x$SSH_ASKPASS == x ] || SSH_ASKPASS_O=$SSH_ASKPASS
+
+    export DISPLAY=:0
+    export SSH_ASKPASS=$tmpfile
+
+    for k in `find ${HOME}/.ssh -name 'id_rsa*' ! -name '*.pub'`; do
+        ssh-add $k 2>/dev/null <<< ''
+    done
+
+    [ x$DISPLAY_O == x ] && unset DISPLAY || export DISPLAY=$DISPLAY_O
+    [ x$SSH_ASKPASS_O == x ] && unset SSH_ASKPASS || export SSH_ASKPASS=$SSH_ASKPASS_O
+
+    rm $tmpfile
+}
