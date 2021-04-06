@@ -1,14 +1,18 @@
 {
+    "log": {
+        "loglevel": "warning"
+    },
     "inbounds": [
     {
+        "tag": "socks",
         "protocol": "socks",
-        "port": 1080,
+        "port": 10808,
         "sniffing": {
             "enabled": true,
             "destOverride": ["http", "tls"]
         },
         "settings": {
-            "auth": "noauth"
+            "udp": true
         }
     },
     {
@@ -28,9 +32,15 @@
         },
         "streamSettings": {
             "sockopt": {
-                "tproxy": "tproxy"
+                "tproxy": "tproxy",
+                "mark": 255
             }
         }
+    },
+    {
+        "tag": "http",
+        "port": 10809,
+        "protocol": "http"
     }
     ],
 
@@ -46,7 +56,7 @@
                 "users": [
                 {
                     "id": "5b3bd018-daaa-4a99-a334-6df167df3dd7",
-                    "alterId": 64
+                    "alterId": 4
                 }
                 ]
             }
@@ -55,10 +65,6 @@
         "streamSettings": {
             "network": "ws",
             "security": "tls",
-            "tlsSettings": {
-                "allowInsecure": true,
-                "serverName": "<SERVER>"
-            },
             "wsSettings": {
                 "connectionReuse": true,
                 "headers": {
@@ -69,9 +75,6 @@
             "sockopt": {
                 "mark": 255
             }
-        },
-        "mux": {
-            "enabled": true
         }
     },
     {
@@ -108,9 +111,6 @@
 
     "dns": {
         "servers": [
-            "8.8.8.8",
-            "1.1.1.1",
-            "114.114.114.114",
             {
                 "address": "223.5.5.5",
                 "port": 53,
@@ -119,12 +119,35 @@
                     "ntp.org",
                     "<SERVER>"
                 ]
+            },
+            {
+                "address": "114.114.114.114",
+                "port": 53,
+                "domains": [
+                    "geosite:cn",
+                    "ntp.org",
+                    "<SERVER>"
+                ]
+            },
+            {
+                "address": "8.8.8.8",
+                "port": 53,
+                "domains": [
+                    "geosite:geolocation-!cn"
+                ]
+            },
+            {
+                "address": "1.1.1.1",
+                "port": 53,
+                "domains": [
+                    "geosite:geolocation-!cn"
+                ]
             }
         ]
     },
 
     "routing": {
-        "domainStrategy": "IPIfNonMatch",
+        "domainStrategy": "IPOnDemand",
         "rules": [
         {
             "type": "field",
