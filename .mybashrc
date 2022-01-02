@@ -29,11 +29,11 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-export LANG=zh_CN.utf8
-export PYTHONSTARTUP="$HOME/.pythonrc"
+export LANG=en_US.utf8
+[ -f $HOME/.pythonrc ] && export PYTHONSTARTUP="$HOME/.pythonrc"
 
 # start ssh-agent and register all unprotected private key in $HOME/.ssh
-[ x$SSH_AUTH_SOCK == x ] && {
+[ x$SSH_AUTH_SOCK == x ] && [ -d $HOME/.ssh ] && {
     runtime="/var/run/user/${UID}"
     socket="${runtime}/ssh_agent.socket"
     cache="${runtime}/ssh_agent.cache"
