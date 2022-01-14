@@ -5,7 +5,7 @@ autodetach on
 defscrollback 100000
 scrollback 100000
 termcapinfo xterm* 'ti@:te@:hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
-term xterm
+term xterm-256color
 
 # use mouse to select regions
 #defmousetrack on
@@ -21,8 +21,12 @@ layout new one
 # ** Key Binding **
 # disable xoff
 bind s split
-
 bind t title
+
+bind h focus left
+bind j focus down
+bind k focus up
+bind l focus right
 
 # navigating regions with Ctrl-arrows
 bindkey "^[[1;5D" focus left
