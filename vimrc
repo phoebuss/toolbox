@@ -26,9 +26,10 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     Plugin 'artemkin/taglist.vim'
     Plugin 'mattn/emmet-vim'
     Plugin 'octol/vim-cpp-enhanced-highlight'
-    Plugin 'Valloric/YouCompleteMe'
-    Plugin 'moll/vim-node'
     Plugin 'luochen1990/rainbow'
+    Plugin 'phoebuss/cscope_db'
+    "Plugin 'Valloric/YouCompleteMe'
+    "Plugin 'moll/vim-node'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -155,10 +156,9 @@ endif
 
 "=========================================================================
 " YCM
-if !empty(glob("~/.vim/bundle/YouCompleteMe"))
+if !empty(glob("~/.vim/bundle/YouCompleteMe")) || !empty(glob("/usr/share/vim-youcompleteme"))
     let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
     let g:ycm_confirm_extra_conf = 0
-    let g:ycm_cache_omnifunc = 0
     let g:ycm_show_diagnostics_ui = 0
     let g:ycm_complete_in_comments = 1
     let g:ycm_collect_identifiers_from_comments_and_strings = 1
