@@ -55,7 +55,7 @@ set fileencodings=utf-8,ucs-bom,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set number
 set autoindent
 set autochdir
-set cino=g0,:0,j1,J1
+set cino=l1,g0,t0,+2,:0,j1,J1,(2
 set foldenable
 set fdm=syntax
 set fdls=99
