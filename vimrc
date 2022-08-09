@@ -100,7 +100,8 @@ nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
 vnoremap // y/<C-R>"<CR>
 
 "Disable autoindent for paste
-nnoremap <leader>0 :setl noai nocin nosi noet inde=<CR>:imapc<CR>
+nnoremap <leader>0 :mkexrc! $HOME/.vimrc.tmp<CR>:setl noai nocin nosi noet inde=<CR>:imapc<CR>
+nnoremap <leader>1 :source $HOME/.vimrc.tmp<CR>
 
 "Disable record
 nnoremap q <Nop>
