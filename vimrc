@@ -27,9 +27,6 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     Plugin 'mattn/emmet-vim'
     Plugin 'octol/vim-cpp-enhanced-highlight'
     Plugin 'luochen1990/rainbow'
-    Plugin 'phoebuss/cscope_db'
-    "Plugin 'Valloric/YouCompleteMe'
-    "Plugin 'moll/vim-node'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -55,7 +52,7 @@ set fileencodings=utf-8,ucs-bom,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set number
 set autoindent
 set autochdir
-set cino=l1,g0,t0,+2,:0,j1,J1,(2
+set cino=l1,g0,t0,+2,:0,j1,J1,(0
 set foldenable
 set fdm=syntax
 set fdls=99
@@ -64,13 +61,16 @@ set colorcolumn=81
 set splitbelow
 set splitright
 set encoding=utf-8
+set wildmenu
+set wildmode=longest,full
+set formatoptions=croql
 
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
 autocmd filetype python set fdm=indent
 
 "=========================================================================
 " Hotkey mapping
-let g:mapleader = "," 
+let g:mapleader = ","
 
 "<F2> Comment <F3> Uncomment
 nnoremap <F2> ^i//<esc>
@@ -95,8 +95,7 @@ inoremap {<CR> {}<left><CR><esc>O
 nnoremap <space> @=((foldclosed(line('.')) <0) ? 'zc': 'zo')<CR>
 
 "Include completion
-inoremap #in #include 
-nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
+inoremap #in #include
 vnoremap // y/<C-R>"<CR>
 
 "Disable autoindent for paste
@@ -125,7 +124,7 @@ if !empty(glob("~/.vim/bundle/taglist.vim"))
     let Tlist_Enable_Fold_Column=0
     let Tlist_GainFocus_On_ToggleOpen=1
 
-    autocmd BufWritePost *.c,*.h,*.cpp :TlistUpdate 
+    autocmd BufWritePost *.c,*.h,*.cpp,*.hpp,*.cc :TlistUpdate
 
     nnoremap <F10> :TlistToggle<CR>
 endif
@@ -141,8 +140,56 @@ function! HeaderFileInit()
     call setpos('.', [0,4,0,0])
 endfunction
 
-autocmd BufNewFile *.h :call HeaderFileInit()
+autocmd BufNewFile *.h,*.hpp :call HeaderFileInit()
 
+function! EscapePairs()
+    let opairs = {'(':')', '{':'}', '[':']', '"':'"', "'":"'", '<':'>'}
+    let cpairs = {'"':'"', "'":"'", ')':'(', '}':'{', ']':'[', '>':'<'}
+    let pos = getpos('.')
+    let s = getline(pos[1])
+
+    let stack = []
+    let n_stack = 0
+    for c in split(s[:pos[2]-1], '\zs')
+        if has_key(cpairs, c)
+            let i = n_stack - 1
+            let found = 0
+            while i >= 0
+                if stack[i] == c
+                    let found = 1
+                    call remove(stack, i)
+                    let n_stack -= 1
+                    break
+                endif
+                let i -= 1
+            endwhile
+            if found == 1
+                continue
+            endif
+        endif
+
+        if has_key(opairs, c)
+            let stack += [opairs[c]]
+            let n_stack += 1
+        endif
+    endfor
+
+    if n_stack > 0
+        let target = stack[-1]
+        let i = pos[2]
+        while i < strchars(s)
+            if s[i] == target
+                let pos[2] = i + 1
+                call setpos('.', pos)
+                break
+            endif
+            let i += 1
+        endwhile
+    endif
+endfunction
+
+inoremap <silent> <C-L> <ESC>:call EscapePairs()<CR>a
+nnoremap <silent> <C-L> :call EscapePairs()<CR>
 "=========================================================================
 " Emmet
 if !empty(glob("~/.vim/bundle/emmet-vim"))
@@ -158,7 +205,7 @@ endif
 "=========================================================================
 " YCM
 if !empty(glob("~/.vim/bundle/YouCompleteMe")) || !empty(glob("/usr/share/vim-youcompleteme"))
-    let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '$HOME/.vim/.ycm_extra_conf.py'
     let g:ycm_confirm_extra_conf = 0
     let g:ycm_show_diagnostics_ui = 0
     let g:ycm_complete_in_comments = 1
@@ -171,3 +218,18 @@ if !empty(glob("~/.vim/bundle/YouCompleteMe")) || !empty(glob("/usr/share/vim-yo
     nnoremap <leader>gf :YcmCompleter GoToDefinition<CR>
 endif
 
+if has("cscope")
+    let s:path = expand("%:p:h")
+    while s:path != "/"
+        if !empty(glob(s:path . "/cscope.out"))
+            exec "cscope add " . s:path
+            break
+        endif
+        let s:path = fnamemodify(s:path, ":h")
+    endwhile
+
+    set csre
+    nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-\> :cs find s <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <C-]> :cs find g <C-R>=expand("<cword>")<CR><CR>
+endif
