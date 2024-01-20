@@ -102,6 +102,8 @@ vnoremap // y/<C-R>"<CR>
 nnoremap <leader>0 :mkexrc! $HOME/.vimrc.tmp<CR>:setl noai nocin nosi noet inde=<CR>:imapc<CR>
 nnoremap <leader>1 :source $HOME/.vimrc.tmp<CR>
 
+nnoremap <leader>fk :setl ts=8 sts=8 sw=8 noet<CR>
+nnoremap <leader>fn :setl ts=4 sts=4 sw=4 et<CR>
 "Disable record
 nnoremap q <Nop>
 
@@ -229,7 +231,7 @@ if has("cscope")
     endwhile
 
     set csre
-    nnoremap <C-@> :cs find c <C-R>=expand("<cword>")<CR><CR>
+    nnoremap <leader>gc :cs find c <C-R>=expand("<cword>")<CR><CR>
     nnoremap <C-\> :cs find s <C-R>=expand("<cword>")<CR><CR>
     nnoremap <C-]> :cs find g <C-R>=expand("<cword>")<CR><CR>
 endif

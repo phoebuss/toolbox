@@ -3,7 +3,7 @@
 HISTSIZE=200000
 HISTFILESIZE=200000
 HISTTIMEFORMAT="%m/%d/%y %T "
-PROMPT_COMMAND="history 1|awk '{\$1=\"\"; print}' >> $HOME/history_bak"
+PROMPT_COMMAND="history 1 |awk '{\$1=\"\"; print}' >> $HOME/history_bak"
 
 case "$TERM" in
     xterm*|*-256color|screen) color_prompt=yes;;
