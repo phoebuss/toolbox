@@ -1,16 +1,4 @@
 "=========================================================================
-" Windows OS Setting
-if has('win32')
-    syntax on
-    autocmd GUIEnter * simalt ~x
-    set guifont=Consolas:h11
-    set noeb vb t_vb=
-    set linespace=-1
-    set nobackup
-    autocmd filetype text set tw=160
-endif
-
-"=========================================================================
 " Vundle
 if !empty(glob("~/.vim/bundle/Vundle.vim"))
     set nocompatible              " be iMproved, required
@@ -24,9 +12,9 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     " let Vundle manage Vundle, required
     Plugin 'VundleVim/Vundle.vim'
     Plugin 'artemkin/taglist.vim'
-    Plugin 'mattn/emmet-vim'
     Plugin 'octol/vim-cpp-enhanced-highlight'
     Plugin 'luochen1990/rainbow'
+    Plugin 'tpope/vim-fugitive'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -65,8 +53,12 @@ set wildmenu
 set wildmode=longest,full
 set formatoptions=croql
 
+" Forward clipboard to X11
+"set mouse=a clipboard=autoselect
+
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
 autocmd filetype python set fdm=indent
+autocmd filetype make set noexpandtab
 
 "=========================================================================
 " Hotkey mapping
@@ -95,7 +87,7 @@ inoremap {<CR> {}<left><CR><esc>O
 nnoremap <space> @=((foldclosed(line('.')) <0) ? 'zc': 'zo')<CR>
 
 "Include completion
-inoremap #in #include
+inoremap #in #include 
 vnoremap // y/<C-R>"<CR>
 
 "Disable autoindent for paste
@@ -104,8 +96,25 @@ nnoremap <leader>1 :source $HOME/.vimrc.tmp<CR>
 
 nnoremap <leader>fk :setl ts=8 sts=8 sw=8 noet<CR>
 nnoremap <leader>fn :setl ts=4 sts=4 sw=4 et<CR>
+
 "Disable record
 nnoremap q <Nop>
+
+"Git merge
+"next conflict
+nnoremap <leader>gn ]c
+"previous conflict
+nnoremap <leader>gN [c
+"pick local
+nnoremap <leader>g1 :diffget LOCAL<CR>
+"pick base
+nnoremap <leader>g2 :diffget BASE<CR>
+"pick remote
+nnoremap <leader>g3 :diffget REMOTE<CR>
+"save and quit
+nnoremap <leader>gw :wqa<CR>
+"abort quit
+nnoremap <leader>gq :cq<CR>
 
 "=========================================================================
 " highlight Functions
@@ -190,6 +199,7 @@ function! EscapePairs()
     endif
 endfunction
 
+"execute "set <M-n>=\en"
 inoremap <silent> <C-L> <ESC>:call EscapePairs()<CR>a
 nnoremap <silent> <C-L> :call EscapePairs()<CR>
 "=========================================================================
@@ -214,6 +224,7 @@ if !empty(glob("~/.vim/bundle/YouCompleteMe")) || !empty(glob("/usr/share/vim-yo
     let g:ycm_collect_identifiers_from_comments_and_strings = 1
     let g:ycm_collect_identifiers_from_tags_files = 1
     let g:ycm_seed_identifiers_with_syntax = 1
+    let g:ycm_auto_hover=''
 
     nnoremap <leader>gi :YcmCompleter GoToInclude<CR>
     nnoremap <leader>gd :YcmCompleter GoToDeclaration<CR>

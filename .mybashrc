@@ -5,6 +5,7 @@ HISTFILESIZE=200000
 HISTTIMEFORMAT="%m/%d/%y %T "
 PROMPT_COMMAND="history 1 |awk '{\$1=\"\"; print}' >> $HOME/history_bak"
 
+
 case "$TERM" in
     xterm*|*-256color|screen) color_prompt=yes;;
 esac
@@ -30,49 +31,13 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-export LANG=en_US.utf8
+#export LANG=en_US.utf8
+export LANG=C
 [ -f $HOME/.pythonrc ] && export PYTHONSTARTUP="$HOME/.pythonrc"
 
-# start ssh-agent and register all unprotected private key in $HOME/.ssh
-[ x$SSH_AUTH_SOCK == x ] && [ -d $HOME/.ssh ] && {
-    runtime="/var/run/user/${UID}"
-    socket="${runtime}/ssh_agent.socket"
-    cache="${runtime}/ssh_agent.cache"
-    [ -S $socket ] || {
-        s=`ssh-agent -a $socket | xargs | cut -d ';' -f '1-4'`
-        echo $s > ${cache}; sync
-    }
-    [ -f $cache ] && source ${cache}
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
-    tmpfile=`mktemp`
-    cat > $tmpfile << EOF
-#!/usr/bin/env bash
-read s
-echo \$s
-EOF
-    chmod a+x $tmpfile
-
-    [ x$DISPLAY == x ] || DISPLAY_O=$DISPLAY
-    [ x$SSH_ASKPASS == x ] || SSH_ASKPASS_O=$SSH_ASKPASS
-
-    export DISPLAY=:0
-    export SSH_ASKPASS=$tmpfile
-
-    for k in `find ${HOME}/.ssh -name 'id_rsa*' ! -name '*.pub'`; do
-        ssh-add $k 2>/dev/null <<< ''
-    done
-
-    [ x$DISPLAY_O == x ] && unset DISPLAY || export DISPLAY=$DISPLAY_O
-    [ x$SSH_ASKPASS_O == x ] && unset SSH_ASKPASS || export SSH_ASKPASS=$SSH_ASKPASS_O
-
-    rm $tmpfile
-}
-
-# Some alias
-alias pd="pushd"
-alias dl="dirs -v"
-alias grep="grep --exclude-dir=.git"
-alias whist="cat $HOME/history_bak"
-
-# stop escape $
-shopt -s direxpand
+# tabby homedir
+export PS1="$PS1\[\e]1337;CurrentDir="'$(pwd)\a\]'
