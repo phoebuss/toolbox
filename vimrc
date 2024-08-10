@@ -14,7 +14,7 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     Plugin 'artemkin/taglist.vim'
     Plugin 'octol/vim-cpp-enhanced-highlight'
     Plugin 'luochen1990/rainbow'
-    Plugin 'tpope/vim-fugitive'
+"    Plugin 'tpope/vim-fugitive'
 
     " All of your Plugins must be added before the following line
     call vundle#end()            " required
@@ -57,7 +57,7 @@ set formatoptions=croql
 "set mouse=a clipboard=autoselect
 
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
-autocmd filetype python set fdm=indent
+autocmd filetype python,yaml set fdm=indent
 autocmd filetype make set noexpandtab
 
 "=========================================================================
