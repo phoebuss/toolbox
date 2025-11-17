@@ -4,6 +4,7 @@ altscreen on
 autodetach on
 defscrollback 100000
 scrollback 100000
+defutf8 on
 #termcapinfo xterm* 'ti@:te@:hs:ts=\E]0;:fs=\007:ds=\E]0;\007'
 #term xterm-256color
 

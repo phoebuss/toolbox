@@ -1,21 +1,72 @@
 #!/usr/bin/env bash
+SCRIPT_DIR=$(dirname $(realpath ${BASH_SOURCE[0]}))
+
+. $SCRIPT_DIR/escape.sh
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
 
 HISTSIZE=200000
 HISTFILESIZE=200000
 HISTTIMEFORMAT="%m/%d/%y %T "
-PROMPT_COMMAND="history 1 |awk '{\$1=\"\"; print}' >> $HOME/history_bak"
 
+_PS1_HISTORY_NUM_BG=$BG_20
+_PS1_HISTORY_NUM_FG=$FG_208
+_PS1_HISTORY_NUM_T_FG=$FG_20
+
+_PS1_LOGIN_BG=$BG_27
+_PS1_LOGIN_FG=$FG_235
+_PS1_LOGIN_T_FG=$FG_27
+
+_PS1_CWD_BG=$BG_31
+_PS1_CWD_FG=$FG_255
+_PS1_CWD_T_FG=$FG_31
+
+_PS1_GIT_BG=$BG_54
+_PS1_GIT_FG=$FG_22
+_PS1_GIT_T_FG=$FG_54
+
+_PS1_PROMPT_BG=$BG_RESET
+_PS1_PROMPT_FG=$FG_226
+
+_PS1_CMD_BG=$BG_RESET
+_PS1_CMD_FG=$FG_208
+
+_SUPPORT_POWERLINE_CHARS=$([ "$(printf '\UE0B0' | wc -c)" -eq "3" ] && echo y)
 
 case "$TERM" in
-    xterm*|*-256color|screen) color_prompt=yes;;
+    xterm*|*-256color) color_prompt=yes;;
 esac
 
 if [ "$color_prompt" = yes ]; then
-    PS1='\[\e]0;\u@\h: \w\a\]\[\033[01;32m\]\w \[\033[01;33m\]\$ \[\033[00m\]'
+    PS1="${SGR_RESET}${SGR_BOLD}"
+    PS1="${PS1}${_PS1_HISTORY_NUM_BG}${_PS1_HISTORY_NUM_FG} \! "
+
+    [ -n "$_SUPPORT_POWERLINE_CHARS" ] &&
+        PS1="${PS1}${_PS1_HISTORY_NUM_T_FG}${_PS1_LOGIN_BG}"
+
+    PS1="${PS1}${_PS1_LOGIN_BG}${_PS1_LOGIN_FG} $USER@$HOSTNAME "
+
+    [ -n "$_SUPPORT_POWERLINE_CHARS" ] &&
+        PS1="${PS1}${_PS1_LOGIN_T_FG}${_PS1_CWD_BG}"
+
+    PS1="${PS1}${_PS1_CWD_BG}${_PS1_CWD_FG} \w "
+
+    [ -n "$_SUPPORT_POWERLINE_CHARS" ] &&
+        PS1="${PS1}${_PS1_CWD_T_FG}${BG_RESET}"
+
+    PS1="${PS1}"'$(_bash_git_ps1)'
+    PS1="${PS1}${SGR_RESET}\n${SGR_BOLD}${_PS1_PROMPT_BG}${_PS1_PROMPT_FG}\$"
+    PS1="${PS1}${_PS1_CMD_BG}${_PS1_CMD_FG} "
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1=$'\w \$ '
 fi
+
 unset color_prompt
+
+# tabby homedir
+PS1="$PS1\[\e]1337;CurrentDir="'$(pwd)'"\a\]"
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -31,15 +82,82 @@ fi
 # colored GCC warnings and errors
 export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-#export LANG=en_US.utf8
-export LANG=C
+export LANG=en_US.utf-8
+export LC_ALL=en_US.utf-8
 [ -f $HOME/.pythonrc ] && export PYTHONSTARTUP="$HOME/.pythonrc"
 
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# tabby homedir
-export PS1="$PS1\[\e]1337;CurrentDir="'$(pwd)\a\]'
-
 export PATH=$PATH:$HOME/.local/bin
+
+PROMPT_COMMAND="(history 1 |awk '{\$1=\"\"; print}' >> $HOME/history_bak)"
+PROMPT_COMMAND="(_bash_postexec) && ${PROMPT_COMMAND}"
+PS0='$(_bash_preexec)\e[0m'
+
+export _BASH_TMPDIR=$(mktemp -d -p /dev/shm bash.XXXXXXXX)
+
+_BASH_CMD_REPORT=y
+
+trap '_bash_cleanup' EXIT
+#trap 'echo "DEBUG: $BASH_COMMAND"' DEBUG
+
+_bash_preexec()
+{
+    [ x$_BASH_CMD_REPORT == xy ] && _bash_record_cmd_start
+}
+
+_bash_postexec()
+{
+    [ x$_BASH_CMD_REPORT == xy ] && _bash_do_cmd_report
+}
+
+_bash_cleanup()
+{
+    rm -rf $_BASH_TMPDIR
+}
+
+_bash_record_cmd_start()
+{
+    echo "$(date +%s%3N)" > $_BASH_TMPDIR/cmd_start
+}
+
+_bash_do_cmd_report()
+{
+    local file=${_BASH_TMPDIR}/cmd_start
+
+    [ -f ${file} ] || return
+
+    local end=$(date +%s%3N)
+    local end_s=$(date -d "@${end:: -3}" +"%Y-%m-%d %T").${end: -3}
+    local start=$(<${file}) && rm -rf ${file}
+    local start_s=$(date -d "@${start:: -3}" +"%Y-%m-%d %T").${start: -3}
+
+    local duration="000$((end - start))"
+
+    printf "\e[0;38;5;244m-------- CMD EXECUTION STATISTICS --------\n"
+    printf "dispatch time: %s\n" "$start_s"
+    printf "finish time: %s\n" "$end_s"
+    printf "duration: %s seconds\n" "$((10#${duration:: -3})).${duration: -3}"
+}
+
+_bash_git_ps1()
+{
+    (git rev-parse --is-inside-work-tree >/dev/null 2>&1) || return
+
+    local v
+
+    [ -n "$_SUPPORT_POWERLINE_CHARS" ] &&
+        v=" \e[38;5;54m\e[39;48;5;54m\e[49;38;5;54m"
+
+    v=$v"\e[0m $(git log -1 --pretty=format:"%C(auto)%h%d%Creset" --decorate --color=always)"
+
+    printf "$v"
+}
+
+bash_enable_cmd_report()
+{
+    _BASH_CMD_REPORT=y
+}
+
+bash_disable_cmd_report()
+{
+    _BASH_CMD_REPORT=n
+}
