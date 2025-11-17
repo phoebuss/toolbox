@@ -14,6 +14,8 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     Plugin 'artemkin/taglist.vim'
     Plugin 'octol/vim-cpp-enhanced-highlight'
     Plugin 'luochen1990/rainbow'
+    Plugin 'andymass/vim-matchup'
+    Plugin 'craigmac/vim-mermaid'
 "    Plugin 'tpope/vim-fugitive'
 
     " All of your Plugins must be added before the following line
@@ -40,7 +42,7 @@ set fileencodings=utf-8,ucs-bom,cp936,gb18030,big5,euc-jp,euc-kr,latin1
 set number
 set autoindent
 set autochdir
-set cino=l1,g0,t0,+2,:0,j1,J1,(0
+set cino=l0,g0,t0,+2,:0,j1,(0
 set foldenable
 set fdm=syntax
 set fdls=99
@@ -59,6 +61,7 @@ set formatoptions=croql
 let g:html_indent_inctags = "html,body,head,tbody,style,script"
 autocmd filetype python,yaml set fdm=indent
 autocmd filetype make set noexpandtab
+autocmd FileType sh let g:sh_fold_enabled=7
 
 "=========================================================================
 " Hotkey mapping
@@ -81,6 +84,7 @@ inoremap (<space><space> ()<left>
 inoremap [<space><space> []<left>
 inoremap {<space><space> {}<left>
 inoremap /*<space><space> /*<space><space>*/<left><left><left>
+inoremap /**<CR> /**<CR><CR>/<left><up><space>
 
 inoremap {<CR> {}<left><CR><esc>O
 

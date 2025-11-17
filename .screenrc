@@ -13,8 +13,14 @@ defutf8 on
 #mousetrack on
 
 # caption customization
+
 hardstatus alwayslastline
-hardstatus string "%{= kG}%{g}[%{G}$USER@%H%{g}][%{Y}%S%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]"
+# pre 5.0
+#hardstatus string "%{= kG}%{g}[%{G}$USER@%H%{g}][%{Y}%S%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]"
+
+# post 5.0
+hardstatus string "%{=2;0}[%{+10;0}$USER@%H%{-}][%{+11;0}%S%{-}][%-=%{=7;0} %-w%{+b 0;3}> %n %t%?(%u)%? <%{-}%+w %= %{-}][%m/%d %C:%A]"
+hardstatus string "%{=2;0}[%{+10;0}$USER@%H%{-}][%{+11;0}%S%{-}][%-=%{7;0} %-w%{+b 0;11}> %n %t <%{-}%+w %= %{-}][%{4;0}%m/%d %{7;0}%C %A%{2;0}]"
 
 layout autosave on
 layout new one
