@@ -39,6 +39,10 @@ case "$TERM" in
     xterm*|*-256color) color_prompt=yes;;
 esac
 
+alias pd="pushd"
+alias dl="dirs -v"
+alias gh="cat $HOME/history_bak |grep "
+
 if [ "$color_prompt" = yes ]; then
     PS1="${SGR_RESET}${SGR_BOLD}"
     PS1="${PS1}${_PS1_HISTORY_NUM_BG}${_PS1_HISTORY_NUM_FG} \! "

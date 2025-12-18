@@ -16,6 +16,7 @@ if !empty(glob("~/.vim/bundle/Vundle.vim"))
     Plugin 'luochen1990/rainbow'
     Plugin 'andymass/vim-matchup'
     Plugin 'craigmac/vim-mermaid'
+    Plugin 'ycm-core/YouCompleteMe'
 "    Plugin 'tpope/vim-fugitive'
 
     " All of your Plugins must be added before the following line
@@ -27,7 +28,6 @@ endif
 " General Setting
 syntax on
 set ruler
-colorscheme koehler
 set incsearch
 set hlsearch
 set ignorecase
@@ -54,6 +54,10 @@ set encoding=utf-8
 set wildmenu
 set wildmode=longest,full
 set formatoptions=croql
+
+colorscheme koehler
+highlight Normal ctermbg=NONE
+highlight nonText ctermbg=NONE
 
 " Forward clipboard to X11
 "set mouse=a clipboard=autoselect
