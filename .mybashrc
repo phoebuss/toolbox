@@ -165,3 +165,8 @@ bash_disable_cmd_report()
 {
     _BASH_CMD_REPORT=n
 }
+
+[ "x$SSH_AUTH_SOCK" != "x" ] || {
+    eval `ssh-agent -s` &>/dev/null &&
+        ls $HOME/.ssh/id_* | grep -v "\.pub$" | xargs ssh-add &>/dev/null
+}
