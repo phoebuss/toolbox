@@ -35,6 +35,8 @@ _PS1_CMD_FG=$FG_208
 
 _SUPPORT_POWERLINE_CHARS=$([ "$(printf '\UE0B0' | wc -c)" -eq "3" ] && echo y)
 
+export TERM=xterm-256color
+
 case "$TERM" in
     xterm*|*-256color) color_prompt=yes;;
 esac
@@ -166,7 +168,19 @@ bash_disable_cmd_report()
     _BASH_CMD_REPORT=n
 }
 
-[ "x$SSH_AUTH_SOCK" != "x" ] || {
-    eval `ssh-agent -s` &>/dev/null &&
-        ls $HOME/.ssh/id_* 2>/dev/null | grep -v "\.pub$" | xargs ssh-add &>/dev/null
+_init_ssh_agent()
+{
+    [ "x$SSH_AUTH_SOCK" != "x" ] || {
+        _SSH_AGENT_CACHE="$HOME/.ssh-agent.cache"
+        [ -f "$_SSH_AGENT_CACHE" ] && {
+            source $_SSH_AGENT_CACHE &>/dev/null
+            [ -S "$SSH_AUTH_SOCK" ]
+        } || {
+            ssh-agent -s > $_SSH_AGENT_CACHE &&
+            source $_SSH_AGENT_CACHE &>/dev/null &&
+            ls $HOME/.ssh/id_* 2>/dev/null | grep -v "\.pub$" | xargs ssh-add &>/dev/null
+        }
+    }
 }
+
+_init_ssh_agent
